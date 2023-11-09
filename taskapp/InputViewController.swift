@@ -35,7 +35,9 @@ class InputViewController: UIViewController {
     }
     
     //viewWillDisappear(_:)メソッドは遷移する際に、画面が非表示になるとき呼ばれるメソッド
+    //（追加）画面が非表示になるときはanimatedのみ
     override func viewWillDisappear(_ animated: Bool) {
+        /*
         try! realm.write {
             self.task.title = self.titleTextField.text!
             self.task.contents = self.contentsTextView.text
@@ -44,7 +46,47 @@ class InputViewController: UIViewController {
             self.realm.add(self.task, update: .modified)
         }
         setNotification(task: task)
+         */
+        
         super.viewWillDisappear(animated)
+    }
+    
+    //（追加）「<back」ボタン押下で呼ばれるメソッド（もし保存していないのであれば、ポップアップ（内容を保存していませんが、よろしいですか？いいえ/はい）。はい→ViewControllerへ戻る、いいえ→遷移しない。もし保存しているのであれば、そのまま遷移する。）
+    
+    //（追加）「保存」ボタン押下で呼ばれるメソッド（Realmに保存し、ViewControllerに戻る）
+    @IBAction func saveButton(_ sender: Any) {
+        try! realm.write {
+            self.task.title = self.titleTextField.text!
+            self.task.contents = self.contentsTextView.text
+            self.task.date = self.datePicker.date
+            self.task.category = self.categoryTextField.text!
+            self.realm.add(self.task, update: .modified)
+        }
+        setNotification(task: task)
+        //super.viewWillDisappear(animated)
+    }
+    
+    //（追加）「キャンセル」ボタン押下でポップアップ（入力した情報を下書き保存しますか？下書き保存/破棄/編集を続ける）。下書き保存→１情報のみ保存しておく。ViewControllerで「＋」押下すると、保存しているものがあればそれが出てくる。破棄→ViewControllerへ戻る、編集を続ける→遷移しない
+    @IBAction func cancelButton(_ sender: Any) {
+        let alert = UIAlertController(title: "入力内容を下書き保存しますか？", message: "破棄すると入力内容が失われます", preferredStyle: .alert)
+        
+        let draft = UIAlertAction(title: "下書き保存する", style: .default, handler: { (action) -> Void in
+            //一番新しい情報のみ保存する。（すでに保存されているものは削除し、今回の情報のみ保存する）
+        })
+        
+        let destroy = UIAlertAction(title: "破棄する", style: .destructive, handler: { (action) -> Void in
+            //何もせずそのままViewControllerへ戻る
+        })
+        
+        let edit = UIAlertAction(title: "編集を続ける", style: .cancel, handler: { (action) -> Void in
+            //★ポップアップを消すのみ（なのでこのまま何も書かなくてOK？）
+        })
+        
+        alert.addAction(draft)
+        alert.addAction(destroy)
+        alert.addAction(edit)
+        
+        self.present(alert, animated: true, completion: nil)
     }
     
     //タスクのローカル通知を登録する
