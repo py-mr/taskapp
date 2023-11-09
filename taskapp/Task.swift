@@ -10,6 +10,7 @@
 
 import RealmSwift
 
+//Realmの基本クラスである Object を継承して、Task クラスを作成
 class Task: Object {
     // 管理用 ID。プライマリーキー
     @Persisted(primaryKey: true) var id: ObjectId
@@ -22,5 +23,8 @@ class Task: Object {
 
     // 日時
     @Persisted var date = Date()
+    
+    //カテゴリ
+    @Persisted var category:String = ""
 
 }

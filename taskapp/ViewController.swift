@@ -9,31 +9,41 @@ import UIKit
 import RealmSwift   // Realmを使うために追加
 import UserNotifications
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
+    @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     
-    // Realmインスタンスを取得する
+    // Realmインスタンスを生成し、それをrealmに入れる
     let realm = try! Realm()
-    //インスタンス生成の時には必ずtry!しないといけないのか？→例外が発生しうる処理。普通のクラスでは発生しないがRealmでは発生する。作られるときにイニシャライザが呼び出されて、そこでthrowsが宣言されているので例外が発生しうる。do-try-catch（処理）ではないので、try!としか書けない。本来do-try-catchで例外が発生、それに対処しないといけない。例外は無視してはいけない。今回は無視しているが、例外の場合はアプリが落ちる。そこまでして使う必要があるならtry!を使ってもよい。リスクにみあうかどうか。
     
     // DB内のタスクが格納されるリスト。（Realmクラスのobjects(_:)メソッドでクラス（「型名.self」で型そのものを変数に入れて扱える。）を指定して一覧を取得）
     // 日付の近い順でソート：昇順（sorted(byKeyPath:ascending:)メソッド）
     // 以降内容をアップデートするとリスト内は自動的に更新される。taskArray＝DBに入っているデータのリストが入っている。
-    var taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: true)
-    //プロパティの初期値を入れるときに別のプロパティは使えない。初期化の順序は決められない（２１行、１５行どっちが早いかわからない）ので。処理ではなく宣言なので。順序決めたいのであればinit()の中でやれば非Optionalで順序だでてできる
+    var taskArray: Results<Task> {
+        if (searchBar.text != "") {
+            return try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: true).filter("category CONTAINS %@", searchBar.text!)
+            
+        } else {
+            return try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: true)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         //データを表示していない部分に罫線を表示するコードを追加
-        tableView.fillerRowHeight = UITableView.automaticDimension
-        //★tableViewのfillerRowHeight（変数）のプロパティに、UITableViewのautomaticDimension（クラス）のプロパティを指定している？
-        
+        tableView.fillerRowHeight = UITableView.automaticDimension        //★tableViewのfillerRowHeight（変数）のプロパティに、UITableViewのautomaticDimension（クラス）のプロパティを指定している？
+
         //tableViewのデリゲートメソッドを実装しているのはself(ViewController)だと教えている（子から親を呼び出している）。
         //ここではtableViewが持っている、dataSourceとdelegateのプロパティが、
         //それぞれUITableViewDelegate型とUITableViewDataSource型のインスタンスを要求している。 
         tableView.delegate = self
         tableView.dataSource = self
+        
+        //デリゲート先を自分に設定
+        searchBar.delegate = self
+        //何も入力されていなくてもRetuenキーを押せるようにする
+        searchBar.enablesReturnKeyAutomatically = false
     }
     
     // データの数（＝セルの数）を返すメソッド
@@ -46,9 +56,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // 再利用可能な cell を得る：Cell（画面の外にいったcellを再利用する）を再利用可能にしたものをcellに入れる
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        //再利用？このcellは、indexPath分の”Cell”を再利用できるようにしたもの？
-        //tableViewはdelegateを必要としている。tableViewは最低限何行つくるかは外部からはわからない。10行であれば11行あれば事足りる。tableViewは事足りる分しかセルのインスタンスを作らない。Cellのインスタンスを取得する(処理コストがかかるのであんまりやりたいわけではない)。ReuseQueueの中に何もない場合は新しくつくって返し、cellが溜まっていればそのセルのどれかを返す。
-        //やってはいけない１：全体のセルがある前提をおいてはいけない。２：１行目のセルがずっと１行目のセルにあるという前提をおいてはいけない。なので、１番目のセルの、テキストを、変える、とかどういうことをしてはいけない。自前でためこんでおいて後から書き換えるということはできない。→元データのソース自体を更新すればよい。＆tableViewのリロードをかければよい、するとtableView()メソッドがまた実施される。リロードしたとしてもdeque...では見えているセルのインスタンスが再度作り替えられるわけではない。ので更新部分のみ更新されたようにみえる。correctionView（横並び/縦並び自由配置）も似ている
         
         //Cellに値を設定する
         //taskArray＝DB（ではない）に入っているデータのリストが入っている。taskにtaskArray1行ずつ入る
@@ -59,7 +66,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         //DateFormatter()のインスタンスを取得。そのフォーマットをyyyy-MM-dd HH:mmにする
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm"
-        
         //formatterのdateを、cellのdetailtextLabelのtextに入れる。
         let dateString:String = formatter.string(from: task.date)
         cell.detailTextLabel?.text = dateString
@@ -118,6 +124,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
+    //テキスト変更時の呼び出しメソッド
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        //テーブルを再読み込みする。
+        tableView.reloadData()
+    }
+
     //入力画面から戻って来た時に、TableViewを更新させる
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

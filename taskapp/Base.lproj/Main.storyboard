@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="oGO-Ac-gZG">
-                                <rect key="frame" x="0.0" y="103" width="393" height="715"/>
+                                <rect key="frame" x="0.0" y="179" width="393" height="639"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="83j-uV-8by" detailTextLabel="qgh-LN-WDV" style="IBUITableViewCellStyleSubtitle" id="iBK-WT-X59">
@@ -46,12 +46,27 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <searchBar contentMode="redraw" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="P24-nv-KM9">
+                                <rect key="frame" x="87" y="119" width="306" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="Wtn-V9-XJ4"/>
+                                </connections>
+                            </searchBar>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Category" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sHn-Da-fhU">
+                                <rect key="frame" x="16" y="131" width="71" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="oGO-Ac-gZG" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="ELp-ej-Sof"/>
-                            <constraint firstItem="oGO-Ac-gZG" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="FsU-k4-SH2"/>
+                            <constraint firstItem="oGO-Ac-gZG" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="76" id="FsU-k4-SH2"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="oGO-Ac-gZG" secondAttribute="trailing" id="bl2-L0-PQC"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="oGO-Ac-gZG" secondAttribute="bottom" id="iGi-xY-PwQ"/>
                         </constraints>
@@ -64,6 +79,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="searchBar" destination="P24-nv-KM9" id="lHJ-ps-vJe"/>
                         <outlet property="tableView" destination="oGO-Ac-gZG" id="b2H-sI-sBl"/>
                         <segue destination="rGa-bv-OOx" kind="show" identifier="cellSegue" id="EbX-ln-Jq7"/>
                     </connections>
@@ -114,6 +130,19 @@
                                     <constraint firstAttribute="height" constant="120" id="IRS-1J-zGS"/>
                                 </constraints>
                             </datePicker>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="カテゴリ" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6c9-AP-qOZ">
+                                <rect key="frame" x="10" y="578" width="70" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="emr-81-9Fe">
+                                <rect key="frame" x="16" y="607" width="361" height="34"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="kAa-z3-GBt"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -137,6 +166,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="FeY-ta-U90"/>
                     <connections>
+                        <outlet property="categoryTextField" destination="emr-81-9Fe" id="KpI-DR-iIJ"/>
                         <outlet property="contentsTextView" destination="ndR-eP-fPe" id="Wcb-hU-i68"/>
                         <outlet property="datePicker" destination="5dg-f0-hCY" id="Nmf-W0-qQ9"/>
                         <outlet property="titleTextField" destination="UTn-6o-ip9" id="Fed-Du-BpP"/>
