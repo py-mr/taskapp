@@ -53,8 +53,16 @@ class InputViewController: UIViewController {
     
     //（追加）「<back」ボタン押下で呼ばれるメソッド（もし保存していないのであれば、ポップアップ（内容を保存していませんが、よろしいですか？いいえ/はい）。はい→ViewControllerへ戻る、いいえ→遷移しない。もし保存しているのであれば、そのまま遷移する。）
     
-    //（追加）「保存」ボタン押下で呼ばれるメソッド（Realmに保存し、ViewControllerに戻る）
+    //（追加）「保存」ボタン押下で呼ばれるメソッド（バリデーションチェック、Realmに保存し、ViewControllerに戻る）
     @IBAction func saveButton(_ sender: Any) {
+        //タイトル、日付、カテゴリは必須にする
+        var message = ""
+        if self.titleTextField.text!.isEmpty {
+            message = "空だよ"
+        }
+        if !message.isEmpty {
+            print(message)
+        }
         try! realm.write {
             self.task.title = self.titleTextField.text!
             self.task.contents = self.contentsTextView.text
@@ -76,6 +84,11 @@ class InputViewController: UIViewController {
         
         let destroy = UIAlertAction(title: "破棄する", style: .destructive, handler: { (action) -> Void in
             //何もせずそのままViewControllerへ戻る
+            //アラートが消えるのと画面遷移が重ならないように0.1秒後に画面遷移するようにしてる
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            // 0.1秒後に実行したい処理
+                self.navigationController?.popViewController(animated: true)
+            }
         })
         
         let edit = UIAlertAction(title: "編集を続ける", style: .cancel, handler: { (action) -> Void in

@@ -119,8 +119,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             let indexPath = self.tableView.indexPathForSelectedRow
             inputViewController.task = taskArray[indexPath!.row]
         //＋が押下された場合は、Taskクラスのインスタンスを新しくしてそのまま渡す。
+        //（追加）さらに、もし下書き保存があった場合は、その情報を返す。（その前にポップアップ出す）
         } else {
-            inputViewController.task = Task()
+            
+            //if (下書き保存があった場合) {
+                let alert = UIAlertController(title: "前回の下書きから始めますか？", message: "", preferredStyle: .alert)
+                let draftyes = UIAlertAction(title: "はい", style: .default, handler: { (action) -> Void in
+                    //一番新しい情報を渡して出す
+                })
+                let draftno = UIAlertAction(title: "いいえ", style: .default, handler: { (action) -> Void in
+                    inputViewController.task = Task()
+                })
+                alert.addAction(draftyes)
+                alert.addAction(draftno)
+                self.present(alert, animated: true, completion: nil)
+            //} else {
+                inputViewController.task = Task()
+            //}
         }
     }
     

@@ -47,7 +47,7 @@
                                 </prototypes>
                             </tableView>
                             <searchBar contentMode="redraw" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="P24-nv-KM9">
-                                <rect key="frame" x="86" y="119" width="306" height="44"/>
+                                <rect key="frame" x="85" y="119" width="306" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
@@ -215,7 +215,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="EbX-ln-Jq7"/>
+        <segue reference="mDd-JF-UII"/>
     </inferredMetricsTieBreakers>
     <resources>
         <systemColor name="labelColor">
