@@ -47,7 +47,7 @@
                                 </prototypes>
                             </tableView>
                             <searchBar contentMode="redraw" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="P24-nv-KM9">
-                                <rect key="frame" x="85" y="119" width="306" height="44"/>
+                                <rect key="frame" x="85" y="119" width="300" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
@@ -74,14 +74,14 @@
                     <navigationItem key="navigationItem" id="Bdr-ZU-PnJ">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="jtE-hs-qB6">
                             <connections>
-                                <segue destination="rGa-bv-OOx" kind="show" id="mDd-JF-UII"/>
+                                <action selector="plusButton:" destination="BYZ-38-t0r" id="rjz-pg-1K6"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="searchBar" destination="P24-nv-KM9" id="lHJ-ps-vJe"/>
                         <outlet property="tableView" destination="oGO-Ac-gZG" id="b2H-sI-sBl"/>
-                        <segue destination="rGa-bv-OOx" kind="show" identifier="cellSegue" id="EbX-ln-Jq7"/>
+                        <segue destination="rGa-bv-OOx" kind="show" identifier="inputTask" id="EbX-ln-Jq7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -104,6 +104,7 @@
                             </label>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="UTn-6o-ip9">
                                 <rect key="frame" x="10" y="144" width="373" height="34"/>
+                                <color key="tintColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
@@ -214,9 +215,6 @@
             <point key="canvasLocation" x="43.511450381679388" y="-27.464788732394368"/>
         </scene>
     </scenes>
-    <inferredMetricsTieBreakers>
-        <segue reference="mDd-JF-UII"/>
-    </inferredMetricsTieBreakers>
     <resources>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

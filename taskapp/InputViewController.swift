@@ -18,12 +18,31 @@ class InputViewController: UIViewController {
     
     // Realmインスタンスを取得する
     let realm = try! Realm()
-    var task: Task!
+    //var task: Task!
+    //var draft: Draft!
+    var task = Task()
+    var draft = Draft()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
+        
+        //★もっと綺麗に書きたい
+        titleTextField.placeholder = "入力してください"
+        titleTextField.layer.cornerRadius = 5
+        titleTextField.layer.borderColor = UIColor.lightGray.cgColor
+        titleTextField.layer.borderWidth = 1.0
+        //★https://qiita.com/REON/items/a5b2122785792f83f851
+        //contentsTextView.placeholder = "入力してください"
+        contentsTextView.layer.cornerRadius = 5
+        contentsTextView.layer.borderColor = UIColor.lightGray.cgColor
+        contentsTextView.layer.borderWidth = 1.0
+        categoryTextField.placeholder = "入力してください"
+        categoryTextField.layer.cornerRadius = 5
+        categoryTextField.layer.borderColor = UIColor.lightGray.cgColor
+        categoryTextField.layer.borderWidth = 1.0
+        
         // 背景をタップしたらdismissKeyboardメソッドを呼ぶように設定する
         let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(tapGesture)
@@ -56,30 +75,74 @@ class InputViewController: UIViewController {
     //（追加）「保存」ボタン押下で呼ばれるメソッド（バリデーションチェック、Realmに保存し、ViewControllerに戻る）
     @IBAction func saveButton(_ sender: Any) {
         //タイトル、日付、カテゴリは必須にする
-        var message = ""
-        if self.titleTextField.text!.isEmpty {
-            message = "空だよ"
+        //★もっといい感じにしたいけど。。あと日付はチェックしなくていいのかな
+        if self.titleTextField.text!.isEmpty || self.categoryTextField.text!.isEmpty {
+            if self.titleTextField.text!.isEmpty && self.categoryTextField.text!.isEmpty{
+                super.viewDidLoad()
+                titleTextField.layer.borderColor = UIColor.red.cgColor
+                categoryTextField.layer.borderColor = UIColor.red.cgColor
+            } else if self.titleTextField.text!.isEmpty && !self.categoryTextField.text!.isEmpty{
+                super.viewDidLoad()
+                titleTextField.layer.borderColor = UIColor.red.cgColor
+                categoryTextField.layer.borderColor = UIColor.lightGray.cgColor
+            } else {
+                super.viewDidLoad()
+                titleTextField.layer.borderColor = UIColor.lightGray.cgColor
+                categoryTextField.layer.borderColor = UIColor.red.cgColor
+            }
+        } else {
+            super.viewDidLoad()
+            titleTextField.layer.borderColor = UIColor.lightGray.cgColor
+            categoryTextField.layer.borderColor = UIColor.lightGray.cgColor
+            let alertsheet: UIAlertController = UIAlertController(title: "保存してもいいですか？", message: "", preferredStyle:  UIAlertController.Style.actionSheet)
+            
+            let save = UIAlertAction(title: "OK", style: .default, handler: { [self] (action) -> Void in
+                try! realm.write {
+                    self.task.title = self.titleTextField.text!
+                    self.task.contents = self.contentsTextView.text
+                    self.task.date = self.datePicker.date
+                    self.task.category = self.categoryTextField.text!
+                    self.realm.add(self.task, update: .modified)
+                }
+                setNotification(task: task)
+                self.navigationController?.popViewController(animated: true)
+            })
+            let cancel = UIAlertAction(title: "キャンセル", style: .cancel, handler: { (action) -> Void in
+                //ポップアップを消すのみ（なのでこのまま何も書かなくてOK）
+            })
+            
+            alertsheet.addAction(save)
+            alertsheet.addAction(cancel)
+            
+            self.present(alertsheet, animated: true, completion: nil)
         }
-        if !message.isEmpty {
-            print(message)
-        }
-        try! realm.write {
-            self.task.title = self.titleTextField.text!
-            self.task.contents = self.contentsTextView.text
-            self.task.date = self.datePicker.date
-            self.task.category = self.categoryTextField.text!
-            self.realm.add(self.task, update: .modified)
-        }
-        setNotification(task: task)
-        //super.viewWillDisappear(animated)
     }
     
     //（追加）「キャンセル」ボタン押下でポップアップ（入力した情報を下書き保存しますか？下書き保存/破棄/編集を続ける）。下書き保存→１情報のみ保存しておく。ViewControllerで「＋」押下すると、保存しているものがあればそれが出てくる。破棄→ViewControllerへ戻る、編集を続ける→遷移しない
     @IBAction func cancelButton(_ sender: Any) {
         let alert = UIAlertController(title: "入力内容を下書き保存しますか？", message: "破棄すると入力内容が失われます", preferredStyle: .alert)
         
-        let draft = UIAlertAction(title: "下書き保存する", style: .default, handler: { (action) -> Void in
-            //一番新しい情報のみ保存する。（すでに保存されているものは削除し、今回の情報のみ保存する）
+        let draftsave = UIAlertAction(title: "下書き保存する", style: .default, handler: { [self] (action) -> Void in
+            print(self.titleTextField.text!)
+            //★前保存していたものは削除する。（どうやろうかな）
+            //データベースから削除する
+            try! realm.write {
+                let draftArray = try! Realm().objects(Draft.self)
+                self.realm.delete(draftArray)
+            }
+            try! self.realm.write {
+                self.draft.title = self.titleTextField.text!
+                self.draft.contents = self.contentsTextView.text
+                self.draft.date = self.datePicker.date
+                self.draft.category = self.categoryTextField.text!
+                self.realm.add(self.draft, update: .modified)
+            }
+            //何もせずそのままViewControllerへ戻る
+            //アラートが消えるのと画面遷移が重ならないように0.1秒後に画面遷移するようにしてる
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            // 0.1秒後に実行したい処理
+                self.navigationController?.popViewController(animated: true)
+            }
         })
         
         let destroy = UIAlertAction(title: "破棄する", style: .destructive, handler: { (action) -> Void in
@@ -92,10 +155,10 @@ class InputViewController: UIViewController {
         })
         
         let edit = UIAlertAction(title: "編集を続ける", style: .cancel, handler: { (action) -> Void in
-            //★ポップアップを消すのみ（なのでこのまま何も書かなくてOK？）
+            //ポップアップを消すのみ（なのでこのまま何も書かなくてOK）
         })
         
-        alert.addAction(draft)
+        alert.addAction(draftsave)
         alert.addAction(destroy)
         alert.addAction(edit)
         
