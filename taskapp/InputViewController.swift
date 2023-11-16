@@ -16,6 +16,8 @@ class InputViewController: UIViewController {
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var categoryTextField: UITextField!
     
+    @IBOutlet weak var errorLabelCategory: UILabel!
+    @IBOutlet weak var errorLabelTitle: UILabel!
     // Realmインスタンスを取得する
     let realm = try! Realm()
     //var task: Task!
@@ -81,19 +83,28 @@ class InputViewController: UIViewController {
                 super.viewDidLoad()
                 titleTextField.layer.borderColor = UIColor.red.cgColor
                 categoryTextField.layer.borderColor = UIColor.red.cgColor
+                 //★これでいいのだろうか
+                errorLabelTitle.text = "必須項目です"
+                errorLabelCategory.text = "必須項目です"
             } else if self.titleTextField.text!.isEmpty && !self.categoryTextField.text!.isEmpty{
                 super.viewDidLoad()
                 titleTextField.layer.borderColor = UIColor.red.cgColor
                 categoryTextField.layer.borderColor = UIColor.lightGray.cgColor
+                errorLabelTitle.text = "必須項目です"
+                errorLabelCategory.text = ""
             } else {
                 super.viewDidLoad()
                 titleTextField.layer.borderColor = UIColor.lightGray.cgColor
                 categoryTextField.layer.borderColor = UIColor.red.cgColor
+                errorLabelTitle.text = ""
+                errorLabelCategory.text = "必須項目です"
             }
         } else {
             super.viewDidLoad()
             titleTextField.layer.borderColor = UIColor.lightGray.cgColor
             categoryTextField.layer.borderColor = UIColor.lightGray.cgColor
+            errorLabelTitle.text = ""
+            errorLabelCategory.text = ""
             let alertsheet: UIAlertController = UIAlertController(title: "保存してもいいですか？", message: "", preferredStyle:  UIAlertController.Style.actionSheet)
             
             let save = UIAlertAction(title: "OK", style: .default, handler: { [self] (action) -> Void in

@@ -47,7 +47,7 @@
                                 </prototypes>
                             </tableView>
                             <searchBar contentMode="redraw" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="P24-nv-KM9">
-                                <rect key="frame" x="85" y="119" width="300" height="44"/>
+                                <rect key="frame" x="84" y="119" width="300" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
@@ -162,6 +162,20 @@
                                     <action selector="cancelButton:" destination="rGa-bv-OOx" eventType="touchUpInside" id="2hk-zY-297"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XOG-47-Cov">
+                                <rect key="frame" x="96" y="113" width="209" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" systemColor="systemRedColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mb1-Bq-kLn">
+                                <rect key="frame" x="88" y="578" width="209" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" systemColor="systemRedColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="kAa-z3-GBt"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -188,6 +202,8 @@
                         <outlet property="categoryTextField" destination="emr-81-9Fe" id="KpI-DR-iIJ"/>
                         <outlet property="contentsTextView" destination="ndR-eP-fPe" id="Wcb-hU-i68"/>
                         <outlet property="datePicker" destination="5dg-f0-hCY" id="Nmf-W0-qQ9"/>
+                        <outlet property="errorLabelCategory" destination="mb1-Bq-kLn" id="KPU-mN-3H8"/>
+                        <outlet property="errorLabelTitle" destination="XOG-47-Cov" id="r7R-iN-uge"/>
                         <outlet property="titleTextField" destination="UTn-6o-ip9" id="Fed-Du-BpP"/>
                     </connections>
                 </viewController>
@@ -221,6 +237,9 @@
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
