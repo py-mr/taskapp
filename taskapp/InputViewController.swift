@@ -18,6 +18,7 @@ class InputViewController: UIViewController {
     
     @IBOutlet weak var errorLabelCategory: UILabel!
     @IBOutlet weak var errorLabelTitle: UILabel!
+    @IBOutlet weak var errorLabelDate: UILabel!
     // Realmインスタンスを取得する
     let realm = try! Realm()
     //var task: Task!
@@ -67,7 +68,7 @@ class InputViewController: UIViewController {
     
     //（追加）「保存」ボタン押下で呼ばれるメソッド（バリデーションチェック、Realmに保存し、ViewControllerに戻る）
     @IBAction func saveButton(_ sender: Any) {
-        //タイトル、日付（チェック不要。非Optionalだし）、カテゴリは必須にする
+        //タイトル、日付（チェック不要。非Optionalだし。けど過去はNGにする）、カテゴリは必須にする
         switch validate().validTitle {
         case 1:
             titleTextField.layer.borderColor = UIColor.red.cgColor
@@ -83,6 +84,14 @@ class InputViewController: UIViewController {
         default:
             categoryTextField.layer.borderColor = UIColor.lightGray.cgColor
             errorLabelCategory.text = ""
+        }
+        switch validate().validDate {
+        case 1:
+            //categoryTextField.layer.borderColor = UIColor.red.cgColor
+            errorLabelDate.text = "過去の日付は入力できません"
+        default:
+            //categoryTextField.layer.borderColor = UIColor.lightGray.cgColor
+            errorLabelDate.text = ""
         }
         
         /*if self.titleTextField.text!.isEmpty || self.categoryTextField.text!.isEmpty {*/
@@ -116,7 +125,9 @@ class InputViewController: UIViewController {
                 } else {
                     print("一時保存データがないなら何もしない")
                 }
-                 
+                //★ただ、そもそもこれでいいのか？Bのデータを保存したらAのデータは削除すべきなのでは？
+                
+                
                 setNotification(task: task)
                 self.navigationController?.popViewController(animated: true)
             })
@@ -131,16 +142,24 @@ class InputViewController: UIViewController {
         }
     }
     
-    func validate() -> (validTitle:Int, validCategory:Int) {
+    func validate() -> (validTitle:Int, validCategory:Int, validDate:Int) {
         var validTitle = 0
         var validCategory = 0
+        var validDate = 0
+        let now = Date()
+        let modifiedDate = Calendar.current.date(byAdding: .minute, value: -1, to: now)!
+
         if self.titleTextField.text!.isEmpty {
             validTitle = validTitle + 1
         }
         if self.categoryTextField.text!.isEmpty {
             validCategory = validCategory + 1
         }
-        return (validTitle, validCategory)
+        if datePicker.date.compare(modifiedDate) == .orderedAscending {
+            validDate = validDate + 1
+        }
+        return (validTitle, validCategory, validDate)
+        
     }
     
     //（追加）「キャンセル」ボタン押下でポップアップ（入力した情報を下書き保存しますか？下書き保存/破棄/編集を続ける）。下書き保存→１情報のみ保存しておく。ViewControllerで「＋」押下すると、保存しているものがあればそれが出てくる。破棄→ViewControllerへ戻る、編集を続ける→遷移しない
