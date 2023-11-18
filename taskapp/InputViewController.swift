@@ -53,6 +53,8 @@ class InputViewController: UIViewController {
         contentsTextView.text = task.contents
         datePicker.date = task.date
         categoryTextField.text = task.category
+        print("(1-1)input表示後のtask.id", task.id)
+        //★表示のタイミングでもともとのtask.idをもたせればよい？
     }
     
     //viewWillDisappear(_:)メソッドは遷移する際に、画面が非表示になるとき呼ばれるメソッド
@@ -80,7 +82,7 @@ class InputViewController: UIViewController {
         //★もっといい感じにしたいけど。。あと日付はチェックしなくていいのかな
         if self.titleTextField.text!.isEmpty || self.categoryTextField.text!.isEmpty {
             if self.titleTextField.text!.isEmpty && self.categoryTextField.text!.isEmpty{
-                super.viewDidLoad()
+                super.viewDidLoad() //呼び出さないといけないのおかしい
                 titleTextField.layer.borderColor = UIColor.red.cgColor
                 categoryTextField.layer.borderColor = UIColor.red.cgColor
                  //★これでいいのだろうか
@@ -99,6 +101,7 @@ class InputViewController: UIViewController {
                 errorLabelTitle.text = ""
                 errorLabelCategory.text = "必須項目です"
             }
+
         } else {
             super.viewDidLoad()
             titleTextField.layer.borderColor = UIColor.lightGray.cgColor
@@ -108,13 +111,30 @@ class InputViewController: UIViewController {
             let alertsheet: UIAlertController = UIAlertController(title: "保存してもいいですか？", message: "", preferredStyle:  UIAlertController.Style.actionSheet)
             
             let save = UIAlertAction(title: "OK", style: .default, handler: { [self] (action) -> Void in
-                try! realm.write {
+                try! self.realm.write {
                     self.task.title = self.titleTextField.text!
                     self.task.contents = self.contentsTextView.text
                     self.task.date = self.datePicker.date
                     self.task.category = self.categoryTextField.text!
                     self.realm.add(self.task, update: .modified)
+                    print("(1-3)保存した時のID", task.id)
                 }
+
+                //一時保存データAが存在する＆＆一時保存データAのID＝保存したデータのIDの時→一時保存データAを削除する
+                //一時保存データAが存在する＆＆時保存データAのID!＝保存したデータのIDの時→一時保存データAは削除しない（何もしない）
+                //一時保存データAが存在しない→何もしない
+                let draftArray = try! Realm().objects(Draft.self)
+                
+                if !draftArray.isEmpty && draftArray[0].id == task.id {
+                    try! realm.write {
+                        self.realm.delete(draftArray)
+                    }
+                } else if !draftArray.isEmpty && draftArray[0].id != task.id {
+                    print("何もしない")
+                } else {
+                    print("一時保存データがないなら何もしない")
+                }
+                 
                 setNotification(task: task)
                 self.navigationController?.popViewController(animated: true)
             })
@@ -127,6 +147,21 @@ class InputViewController: UIViewController {
             
             self.present(alertsheet, animated: true, completion: nil)
         }
+    }
+    
+    func validate() -> Bool {
+        /*
+        if self.titleTextField.text!.isEmpty {
+                //★エラーメッセージ出す
+                //isValid = false
+        }
+        if self.categoryTextField.text!.isEmpty {
+                //エラーメッセージ出す
+                //isValid = false
+            
+        //isValidがtrueで下記実施
+         */
+        return true
     }
     
     //（追加）「キャンセル」ボタン押下でポップアップ（入力した情報を下書き保存しますか？下書き保存/破棄/編集を続ける）。下書き保存→１情報のみ保存しておく。ViewControllerで「＋」押下すると、保存しているものがあればそれが出てくる。破棄→ViewControllerへ戻る、編集を続ける→遷移しない
@@ -142,11 +177,15 @@ class InputViewController: UIViewController {
                 self.realm.delete(draftArray)
             }
             try! self.realm.write {
+                self.draft.id = task.id
                 self.draft.title = self.titleTextField.text!
+                //★Optional型なので、ここでアンラップして非Optional型にしたものをdtaft.titleに設定している
                 self.draft.contents = self.contentsTextView.text
+                //★String! 強制アンラップされるOptional型のString→結果非Optional型のStringが返されるので!がいらない
                 self.draft.date = self.datePicker.date
                 self.draft.category = self.categoryTextField.text!
                 self.realm.add(self.draft, update: .modified)
+                print("(1-2)下書き保存した時のID", draft.id)
             }
             //何もせずそのままViewControllerへ戻る
             //アラートが消えるのと画面遷移が重ならないように0.1秒後に画面遷移するようにしてる

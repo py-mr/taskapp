@@ -81,7 +81,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         //performSegue(withIdentifier: "cellSegue",sender: nil)
         let indexPath = self.tableView.indexPathForSelectedRow
         let selectedTask = taskArray[indexPath!.row]
-
         // senderに選択されたタスクを渡す
         performSegue(withIdentifier: "inputTask", sender: selectedTask)
     }
@@ -118,21 +117,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     //+ボタンが押下された時のメソッド
     @IBAction func plusButton(_ sender: UIBarButtonItem) {
-        //segueから遷移先のInputViewControllerを取得する
-        //let inputViewController:InputViewController = segue.destination as! InputViewController
-        //let inputViewController:InputViewController = storyboard!.instantiateViewController(withIdentifier: "plusSegue") as! InputViewController
-
         //＋が押下された場合は、Taskクラスのインスタンスを新しくしてそのまま渡す。
         //さらに、もし下書き保存があった場合は、その情報を返す。（その前にポップアップ出す）
         
         if (!draftArray.isEmpty) {
             let draft = draftArray[0]
-            print(draftArray[0])
             let task = Task()
+            task.id = draft.id
             task.title = draft.title
             task.contents = draft.contents
             task.date = draft.date
             task.category = draft.category
+            print(draftArray[0])
 
             let alert = UIAlertController(title: "前回の下書きから始めますか？", message: "", preferredStyle: .alert)
             let draftyes = UIAlertAction(title: "はい", style: .default, handler: { (action) -> Void in
@@ -158,34 +154,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         //segueから遷移先のInputViewControllerを取得する
         let inputViewController:InputViewController = segue.destination as! InputViewController
- 
-        // InputViewControllerへ遷移する際には必ずsenderに対象のタスクが渡されてくるようにしている。
-        // InputViewControllerへ遷移する際には必ずsenderに対象のタスクが渡されてくるようにしている。
-        // ただし、prepareメソッドではsenderの型はAny?であるため、Taskに型変換（キャスト）してから渡すようにする。
-        if sender != nil {
-            inputViewController.task = sender as! Task
+
+        if let sourceTask = sender as? Task { //★senderがnilでない&&TaskにCastできたら。
+            //as? = キャストしてアンラップ（非オプショナル型＝nil非許容にする）。キャストした結果失敗するとNil
+            inputViewController.task = sourceTask
         } else {
+            // performSegueを呼び出す際に必ずsenderにTaskが設定されているならば、キャストに失敗することはあり得ないため、ここのブロックには絶対に来ない。ただし、as?でキャストしている以上、キャスト失敗に備えるコードは実装上避けられないため、なんらかの実装は必要となる。
             inputViewController.task = Task()
         }
-        /*
-        if let sourceTask = sender as? Task { //★senderがnilでない場合？うまく動かない
-        inputViewController.task = sourceTask
-        } else {
-            // performSegueを呼び出す際に必ずsenderにTaskが設定されているならば、
-            // キャストに失敗することはあり得ないため、ここのブロックには絶対に来ない。
-            // ただし、as?でキャストしている以上、キャスト失敗に備えるコードは実装上避けられないため、
-            // なんらかの実装は必要となる。
-            // ･空の新規のタスクを渡す。
-            // ･無視する。
-            // エラーにする。
-            // etc...
-            inputViewController.task = Task()
-        }
-         */
-        
     }
-     
-     
     
     //テキスト変更時の呼び出しメソッド
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
