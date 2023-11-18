@@ -60,17 +60,6 @@ class InputViewController: UIViewController {
     //viewWillDisappear(_:)メソッドは遷移する際に、画面が非表示になるとき呼ばれるメソッド
     //（追加）画面が非表示になるときはanimatedのみ
     override func viewWillDisappear(_ animated: Bool) {
-        /*
-        try! realm.write {
-            self.task.title = self.titleTextField.text!
-            self.task.contents = self.contentsTextView.text
-            self.task.date = self.datePicker.date
-            self.task.category = self.categoryTextField.text!
-            self.realm.add(self.task, update: .modified)
-        }
-        setNotification(task: task)
-         */
-        
         super.viewWillDisappear(animated)
     }
     
@@ -78,36 +67,29 @@ class InputViewController: UIViewController {
     
     //（追加）「保存」ボタン押下で呼ばれるメソッド（バリデーションチェック、Realmに保存し、ViewControllerに戻る）
     @IBAction func saveButton(_ sender: Any) {
-        //タイトル、日付、カテゴリは必須にする
-        //★もっといい感じにしたいけど。。あと日付はチェックしなくていいのかな
-        if self.titleTextField.text!.isEmpty || self.categoryTextField.text!.isEmpty {
-            if self.titleTextField.text!.isEmpty && self.categoryTextField.text!.isEmpty{
-                super.viewDidLoad() //呼び出さないといけないのおかしい
-                titleTextField.layer.borderColor = UIColor.red.cgColor
-                categoryTextField.layer.borderColor = UIColor.red.cgColor
-                 //★これでいいのだろうか
-                errorLabelTitle.text = "必須項目です"
-                errorLabelCategory.text = "必須項目です"
-            } else if self.titleTextField.text!.isEmpty && !self.categoryTextField.text!.isEmpty{
-                super.viewDidLoad()
-                titleTextField.layer.borderColor = UIColor.red.cgColor
-                categoryTextField.layer.borderColor = UIColor.lightGray.cgColor
-                errorLabelTitle.text = "必須項目です"
-                errorLabelCategory.text = ""
-            } else {
-                super.viewDidLoad()
-                titleTextField.layer.borderColor = UIColor.lightGray.cgColor
-                categoryTextField.layer.borderColor = UIColor.red.cgColor
-                errorLabelTitle.text = ""
-                errorLabelCategory.text = "必須項目です"
-            }
-
+        //タイトル、日付（チェック不要。非Optionalだし）、カテゴリは必須にする
+        switch validate().validTitle {
+        case 1:
+            titleTextField.layer.borderColor = UIColor.red.cgColor
+            errorLabelTitle.text = "必須項目です"
+        default:
+            titleTextField.layer.borderColor = UIColor.lightGray.cgColor
+            errorLabelTitle.text = ""
+        }
+        switch validate().validCategory {
+        case 1:
+            categoryTextField.layer.borderColor = UIColor.red.cgColor
+            errorLabelCategory.text = "必須項目です"
+        default:
+            categoryTextField.layer.borderColor = UIColor.lightGray.cgColor
+            errorLabelCategory.text = ""
+        }
+        
+        /*if self.titleTextField.text!.isEmpty || self.categoryTextField.text!.isEmpty {*/
+        if validate().validTitle == 1 || validate().validCategory == 1 {
+            //何もしない
         } else {
             super.viewDidLoad()
-            titleTextField.layer.borderColor = UIColor.lightGray.cgColor
-            categoryTextField.layer.borderColor = UIColor.lightGray.cgColor
-            errorLabelTitle.text = ""
-            errorLabelCategory.text = ""
             let alertsheet: UIAlertController = UIAlertController(title: "保存してもいいですか？", message: "", preferredStyle:  UIAlertController.Style.actionSheet)
             
             let save = UIAlertAction(title: "OK", style: .default, handler: { [self] (action) -> Void in
@@ -149,19 +131,16 @@ class InputViewController: UIViewController {
         }
     }
     
-    func validate() -> Bool {
-        /*
+    func validate() -> (validTitle:Int, validCategory:Int) {
+        var validTitle = 0
+        var validCategory = 0
         if self.titleTextField.text!.isEmpty {
-                //★エラーメッセージ出す
-                //isValid = false
+            validTitle = validTitle + 1
         }
         if self.categoryTextField.text!.isEmpty {
-                //エラーメッセージ出す
-                //isValid = false
-            
-        //isValidがtrueで下記実施
-         */
-        return true
+            validCategory = validCategory + 1
+        }
+        return (validTitle, validCategory)
     }
     
     //（追加）「キャンセル」ボタン押下でポップアップ（入力した情報を下書き保存しますか？下書き保存/破棄/編集を続ける）。下書き保存→１情報のみ保存しておく。ViewControllerで「＋」押下すると、保存しているものがあればそれが出てくる。破棄→ViewControllerへ戻る、編集を続ける→遷移しない
