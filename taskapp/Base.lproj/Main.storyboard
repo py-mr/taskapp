@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="oGO-Ac-gZG">
-                                <rect key="frame" x="0.0" y="179" width="393" height="639"/>
+                                <rect key="frame" x="0.0" y="183" width="393" height="645"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="83j-uV-8by" detailTextLabel="qgh-LN-WDV" style="IBUITableViewCellStyleSubtitle" id="iBK-WT-X59">
@@ -46,17 +46,15 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <searchBar contentMode="redraw" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="P24-nv-KM9">
-                                <rect key="frame" x="84" y="119" width="300" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="P24-nv-KM9">
+                                <rect key="frame" x="90" y="126" width="293" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="Wtn-V9-XJ4"/>
                                 </connections>
                             </searchBar>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="カテゴリ" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sHn-Da-fhU">
-                                <rect key="frame" x="16" y="131" width="70" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="カテゴリ" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sHn-Da-fhU">
+                                <rect key="frame" x="10" y="143" width="70" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -65,10 +63,15 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="oGO-Ac-gZG" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="10" id="2Bk-PX-RGw"/>
                             <constraint firstItem="oGO-Ac-gZG" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="ELp-ej-Sof"/>
-                            <constraint firstItem="oGO-Ac-gZG" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="76" id="FsU-k4-SH2"/>
+                            <constraint firstItem="oGO-Ac-gZG" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="80" id="MZ8-gW-Pqd"/>
+                            <constraint firstItem="P24-nv-KM9" firstAttribute="centerY" secondItem="sHn-Da-fhU" secondAttribute="centerY" id="Oda-R6-xvi"/>
+                            <constraint firstItem="P24-nv-KM9" firstAttribute="leading" secondItem="sHn-Da-fhU" secondAttribute="trailing" constant="10" id="Un5-5L-KAN"/>
+                            <constraint firstItem="sHn-Da-fhU" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="40" id="ZHO-E0-WyV"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="oGO-Ac-gZG" secondAttribute="trailing" id="bl2-L0-PQC"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="oGO-Ac-gZG" secondAttribute="bottom" id="iGi-xY-PwQ"/>
+                            <constraint firstItem="sHn-Da-fhU" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="tDH-4g-tb1"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="P24-nv-KM9" secondAttribute="trailing" constant="10" id="xsw-hz-PsT"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Bdr-ZU-PnJ">
@@ -154,10 +157,13 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" style="wheels" translatesAutoresizingMaskIntoConstraints="NO" id="5dg-f0-hCY">
-                                <rect key="frame" x="10" y="485" width="373" height="216"/>
+                                <rect key="frame" x="10" y="485" width="373" height="150"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="150" id="b2y-z5-HDB"/>
+                                </constraints>
                             </datePicker>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="77G-5E-mvL">
-                                <rect key="frame" x="60" y="741" width="111" height="35"/>
+                                <rect key="frame" x="60" y="655" width="111" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="保存"/>
                                 <connections>
@@ -165,7 +171,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DvN-BT-8nO">
-                                <rect key="frame" x="222" y="741" width="111" height="35"/>
+                                <rect key="frame" x="222" y="655" width="111" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="gray" title="キャンセル"/>
                                 <connections>
@@ -183,6 +189,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="kAa-z3-GBt" firstAttribute="trailing" secondItem="ndR-eP-fPe" secondAttribute="trailing" constant="10" id="0Pn-3p-qXO"/>
+                            <constraint firstItem="DvN-BT-8nO" firstAttribute="top" secondItem="5dg-f0-hCY" secondAttribute="bottom" constant="20" id="2LB-aN-Pn1"/>
                             <constraint firstItem="5dg-f0-hCY" firstAttribute="top" secondItem="0Av-9i-Gvx" secondAttribute="bottom" constant="10" id="2eG-0o-gx4"/>
                             <constraint firstItem="DvN-BT-8nO" firstAttribute="height" secondItem="77G-5E-mvL" secondAttribute="height" id="D1N-dm-FxQ"/>
                             <constraint firstItem="kAa-z3-GBt" firstAttribute="trailing" secondItem="emr-81-9Fe" secondAttribute="trailing" constant="10" id="Fow-B8-DlR"/>
@@ -190,7 +197,6 @@
                             <constraint firstItem="0Av-9i-Gvx" firstAttribute="leading" secondItem="kAa-z3-GBt" secondAttribute="leading" constant="10" id="GmM-om-wXC"/>
                             <constraint firstItem="UTn-6o-ip9" firstAttribute="top" secondItem="1af-jR-WcS" secondAttribute="bottom" constant="10" id="Gob-Iq-RWQ"/>
                             <constraint firstItem="kAa-z3-GBt" firstAttribute="trailing" secondItem="ZFE-E4-TiP" secondAttribute="trailing" constant="10" id="Gre-mu-lMU"/>
-                            <constraint firstItem="77G-5E-mvL" firstAttribute="top" secondItem="5dg-f0-hCY" secondAttribute="bottom" constant="40" id="IXE-KB-Ki0"/>
                             <constraint firstItem="ndR-eP-fPe" firstAttribute="leading" secondItem="kAa-z3-GBt" secondAttribute="leading" constant="10" id="Ihs-J7-mQk"/>
                             <constraint firstItem="emr-81-9Fe" firstAttribute="top" secondItem="mb1-Bq-kLn" secondAttribute="bottom" constant="10" id="IvJ-qI-h89"/>
                             <constraint firstItem="DvN-BT-8nO" firstAttribute="width" secondItem="77G-5E-mvL" secondAttribute="width" id="KcC-4S-n3o"/>
@@ -216,8 +222,8 @@
                             <constraint firstItem="1af-jR-WcS" firstAttribute="leading" secondItem="kAa-z3-GBt" secondAttribute="leading" constant="10" id="qer-t0-WYp"/>
                             <constraint firstItem="emr-81-9Fe" firstAttribute="leading" secondItem="kAa-z3-GBt" secondAttribute="leading" constant="10" id="qkN-HV-q9S"/>
                             <constraint firstItem="kAa-z3-GBt" firstAttribute="trailing" secondItem="5dg-f0-hCY" secondAttribute="trailing" constant="10" id="um3-xZ-d20"/>
-                            <constraint firstItem="DvN-BT-8nO" firstAttribute="top" secondItem="5dg-f0-hCY" secondAttribute="bottom" constant="40" id="vO5-mM-yrW"/>
                             <constraint firstItem="77G-5E-mvL" firstAttribute="leading" secondItem="kAa-z3-GBt" secondAttribute="leading" constant="60" id="vaA-mx-Yc6"/>
+                            <constraint firstItem="77G-5E-mvL" firstAttribute="top" secondItem="5dg-f0-hCY" secondAttribute="bottom" constant="20" id="w3o-CO-kNa"/>
                             <constraint firstItem="kAa-z3-GBt" firstAttribute="trailing" secondItem="mb1-Bq-kLn" secondAttribute="trailing" constant="10" id="xJ1-28-10a"/>
                             <constraint firstItem="UTn-6o-ip9" firstAttribute="leading" secondItem="kAa-z3-GBt" secondAttribute="leading" constant="10" id="xup-9P-bgy"/>
                             <constraint firstItem="mb1-Bq-kLn" firstAttribute="leading" secondItem="kAa-z3-GBt" secondAttribute="leading" constant="150" id="xv4-ZI-9B7"/>

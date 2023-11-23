@@ -87,15 +87,13 @@ class InputViewController: UIViewController {
         }
         switch validate().validDate {
         case 1:
-            //categoryTextField.layer.borderColor = UIColor.red.cgColor
             errorLabelDate.text = "過去の日付は入力できません"
         default:
-            //categoryTextField.layer.borderColor = UIColor.lightGray.cgColor
             errorLabelDate.text = ""
         }
         
         /*if self.titleTextField.text!.isEmpty || self.categoryTextField.text!.isEmpty {*/
-        if validate().validTitle == 1 || validate().validCategory == 1 {
+        if validate().validTitle == 1 || validate().validCategory == 1 || validate().validDate == 1 {
             //何もしない
         } else {
             super.viewDidLoad()

@@ -46,6 +46,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         searchBar.delegate = self
         //何も入力されていなくてもReturnキーを押せるようにする
         searchBar.enablesReturnKeyAutomatically = false
+        //UISearchbarの背景に空のUIImageをセットする
+        searchBar.backgroundImage = UIImage()
     }
     
     // データの数（＝セルの数）を返すメソッド
