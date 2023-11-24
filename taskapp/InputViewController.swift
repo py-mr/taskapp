@@ -25,12 +25,13 @@ class InputViewController: UIViewController {
     //var draft: Draft!
     var task = Task()
     var draft = Draft()
+    var category = Category()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        
+        navigationItem.title = "タスク"
         //★もっと綺麗に書きたい
         titleTextField.placeholder = "入力してください"
         titleTextField.layer.cornerRadius = 5
@@ -45,6 +46,8 @@ class InputViewController: UIViewController {
         categoryTextField.layer.cornerRadius = 5
         categoryTextField.layer.borderColor = UIColor.lightGray.cgColor
         categoryTextField.layer.borderWidth = 1.0
+        
+        //categoryTextField.delegate = self
         
         // 背景をタップしたらdismissKeyboardメソッドを呼ぶように設定する
         let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -63,7 +66,7 @@ class InputViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
     }
-    
+
     //（追加）「<back」ボタン押下で呼ばれるメソッド（もし保存していないのであれば、ポップアップ（内容を保存していませんが、よろしいですか？いいえ/はい）。はい→ViewControllerへ戻る、いいえ→遷移しない。もし保存しているのであれば、そのまま遷移する。）
     
     //（追加）「保存」ボタン押下で呼ばれるメソッド（バリデーションチェック、Realmに保存し、ViewControllerに戻る）
@@ -211,6 +214,32 @@ class InputViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
+    
+    @IBAction func makeCategoryButton(_ sender: UIButton) {
+        
+        let alert = UIAlertController(title: "新規カテゴリ名", message: "新規カテゴリ名を入力してください", preferredStyle: .alert)
+        
+        let save = UIAlertAction(title: "OK", style: .default, handler: { [self] (action) -> Void in
+            //★？
+           let text = alert.textFields?.first?.text ?? ""
+            try! self.realm.write {
+                self.category.categoryName = text
+                self.realm.add(self.task, update: .modified)
+                }
+        })
+        let cancel = UIAlertAction(title: "キャンセル", style: .cancel, handler: { (action) -> Void in
+            //ポップアップを消すのみ（なのでこのまま何も書かなくてOK）
+        })
+        
+        alert.addTextField{
+            (textField) in
+            textField.placeholder = "入力してください"
+        }
+        alert.addAction(save)
+        alert.addAction(cancel)
+        
+        self.present(alert, animated: true, completion: nil)
+    }
     //タスクのローカル通知を登録する
     func setNotification(task: Task) {
         let content = UNMutableNotificationContent()

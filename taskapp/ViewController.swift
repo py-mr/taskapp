@@ -29,10 +29,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     var draftArray = try! Realm().objects(Draft.self)
+    var categoryArray = try! Realm().objects(Category.self)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        navigationItem.title = "一覧"
+
         //データを表示していない部分に罫線を表示するコードを追加
         tableView.fillerRowHeight = UITableView.automaticDimension        //★tableViewのfillerRowHeight（変数）のプロパティに、UITableViewのautomaticDimension（クラス）のプロパティを指定している？
 
