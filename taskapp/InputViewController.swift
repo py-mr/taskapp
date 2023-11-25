@@ -13,8 +13,9 @@ class InputViewController: UIViewController {
     
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var contentsTextView: UITextView!
-    @IBOutlet weak var datePicker: UIDatePicker!
+    //@IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var categoryTextField: UITextField!
+    @IBOutlet weak var dateTextField: UITextField!
     
     @IBOutlet weak var errorLabelCategory: UILabel!
     @IBOutlet weak var errorLabelTitle: UILabel!
@@ -32,33 +33,61 @@ class InputViewController: UIViewController {
         
         // Do any additional setup after loading the view.
         navigationItem.title = "タスク"
-        //★もっと綺麗に書きたい
-        titleTextField.placeholder = "入力してください"
-        titleTextField.layer.cornerRadius = 5
-        titleTextField.layer.borderColor = UIColor.lightGray.cgColor
-        titleTextField.layer.borderWidth = 1.0
-        //★https://qiita.com/REON/items/a5b2122785792f83f851
-        //contentsTextView.placeholder = "入力してください"
-        contentsTextView.layer.cornerRadius = 5
-        contentsTextView.layer.borderColor = UIColor.lightGray.cgColor
-        contentsTextView.layer.borderWidth = 1.0
-        categoryTextField.placeholder = "入力してください"
-        categoryTextField.layer.cornerRadius = 5
-        categoryTextField.layer.borderColor = UIColor.lightGray.cgColor
-        categoryTextField.layer.borderWidth = 1.0
-        
-        //categoryTextField.delegate = self
-        
+
+        //TextFieldの見た目
+        fieldappearance(titleTextField)
+        fieldappearance(categoryTextField)
+        fieldappearance(dateTextField)
+        fieldappearance(contentsTextView)
+
         // 背景をタップしたらdismissKeyboardメソッドを呼ぶように設定する
         let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(tapGesture)
         
+        //★Taskクラスのデータ？を各フィールドに入力
         titleTextField.text = task.title
         contentsTextView.text = task.contents
-        datePicker.date = task.date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+        dateTextField.text = dateFormatter.string(from: task.date)
         categoryTextField.text = task.category
-        print("(1-1)input表示後のtask.id", task.id)
-        //★表示のタイミングでもともとのtask.idをもたせればよい？
+        print("(1-1)input表示後のtask.id", task.date)
+    }
+    
+    /*
+    // UITextField編集直後に呼ばれるメソッド
+    @objc func textFieldDidBeginEditing(textField: UITextField) {
+        dateEditing(sender: dateTextField)
+    }
+    // 日付を入力する
+    @objc func dateEditing(sender: UITextField) {
+        let datePicker            = UIDatePicker()
+        datePicker.datePickerMode = UIDatePicker.Mode.date
+        datePicker.locale         = NSLocale(localeIdentifier: "ja_JP") as Locale
+        sender.inputView          = datePicker
+        datePicker.addTarget(self, action: Selector(("datePickerValueChanged:")), for: UIControl.Event.valueChanged)
+    }
+    
+    // 日付を変更した際にUITextFieldに値を設定する
+    @objc func datePickerValueChanged(sender:UIDatePicker) {
+        let dateFormatter       = DateFormatter()
+        dateFormatter.locale    = NSLocale(localeIdentifier: "ja_JP") as Locale
+        //dateFormatter.dateStyle = DateFormatterStyle.MediumStyle
+        dateTextField.text! = dateFormatter.string(from: sender.date)
+    }
+    */
+
+    func fieldappearance(_ sender:UITextField) {
+        sender.placeholder = "入力してください"
+        sender.layer.cornerRadius = 5
+        sender.layer.borderColor = UIColor.lightGray.cgColor
+        sender.layer.borderWidth = 1.0
+    }
+    func fieldappearance(_ sender:UITextView) {
+        //sender.placeholder = "入力してください"
+        sender.layer.cornerRadius = 5
+        sender.layer.borderColor = UIColor.lightGray.cgColor
+        sender.layer.borderWidth = 1.0
     }
     
     //viewWillDisappear(_:)メソッドは遷移する際に、画面が非表示になるとき呼ばれるメソッド
@@ -68,7 +97,7 @@ class InputViewController: UIViewController {
     }
 
     //（追加）「<back」ボタン押下で呼ばれるメソッド（もし保存していないのであれば、ポップアップ（内容を保存していませんが、よろしいですか？いいえ/はい）。はい→ViewControllerへ戻る、いいえ→遷移しない。もし保存しているのであれば、そのまま遷移する。）
-    
+
     //（追加）「保存」ボタン押下で呼ばれるメソッド（バリデーションチェック、Realmに保存し、ViewControllerに戻る）
     @IBAction func saveButton(_ sender: Any) {
         //タイトル、日付（チェック不要。非Optionalだし。けど過去はNGにする）、カテゴリは必須にする
@@ -106,7 +135,10 @@ class InputViewController: UIViewController {
                 try! self.realm.write {
                     self.task.title = self.titleTextField.text!
                     self.task.contents = self.contentsTextView.text
-                    self.task.date = self.datePicker.date
+                    //self.task.date = self.datePicker.date
+                    let dateFormatter = DateFormatter()
+                    let dateDate = dateFormatter.date(from: self.dateTextField.text!)
+                    self.task.date = dateDate!
                     self.task.category = self.categoryTextField.text!
                     self.realm.add(self.task, update: .modified)
                     print("(1-3)保存した時のID", task.id)
@@ -156,7 +188,11 @@ class InputViewController: UIViewController {
         if self.categoryTextField.text!.isEmpty {
             validCategory = validCategory + 1
         }
-        if datePicker.date.compare(modifiedDate) == .orderedAscending {
+        //if datePicker.date.compare(modifiedDate) == .orderedAscending {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+        let date = dateFormatter.date(from: dateTextField.text!)!
+        if date.compare(modifiedDate) == .orderedAscending {
             validDate = validDate + 1
         }
         return (validTitle, validCategory, validDate)
@@ -181,7 +217,11 @@ class InputViewController: UIViewController {
                 //★Optional型なので、ここでアンラップして非Optional型にしたものをdtaft.titleに設定している
                 self.draft.contents = self.contentsTextView.text
                 //★String! 強制アンラップされるOptional型のString→結果非Optional型のStringが返されるので!がいらない
-                self.draft.date = self.datePicker.date
+                //self.draft.date = self.datePicker.date
+                let dateFormatter = DateFormatter()
+                let dateDate = dateFormatter.date(from: self.dateTextField.text!)
+                self.draft.date = dateDate!
+                //self.draft.date = self.dateTextField.text!
                 self.draft.category = self.categoryTextField.text!
                 self.realm.add(self.draft, update: .modified)
                 print("(1-2)下書き保存した時のID", draft.id)
