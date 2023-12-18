@@ -15,6 +15,9 @@
 		0101D4322AC7092C00576144 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0101D4302AC7092C00576144 /* LaunchScreen.storyboard */; };
 		0101D43A2AC7DB1300576144 /* InputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0101D4392AC7DB1300576144 /* InputViewController.swift */; };
 		0101D47E2ACCF45E00576144 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0101D47D2ACCF45E00576144 /* Task.swift */; };
+		01A7F0062B1837E100697D46 /* CategoryCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A7F0052B1837E100697D46 /* CategoryCreateViewController.swift */; };
+		01A7F0082B183B1000697D46 /* CategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A7F0072B183B1000697D46 /* CategoryListViewController.swift */; };
+		01A7F00C2B18CACF00697D46 /* DateTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A7F00B2B18CACF00697D46 /* DateTimeViewController.swift */; };
 		01BAC7552B01F3CB0049B73D /* Draft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BAC7542B01F3CB0049B73D /* Draft.swift */; };
 		01BAC7572B0F40770049B73D /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BAC7562B0F40770049B73D /* Category.swift */; };
 		2F97B7DE1579E5E5BF5800EE /* Pods_taskapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3DB7BE6A412D074848BD43F /* Pods_taskapp.framework */; };
@@ -31,6 +34,9 @@
 		0101D4332AC7092C00576144 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0101D4392AC7DB1300576144 /* InputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewController.swift; sourceTree = "<group>"; };
 		0101D47D2ACCF45E00576144 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		01A7F0052B1837E100697D46 /* CategoryCreateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCreateViewController.swift; sourceTree = "<group>"; };
+		01A7F0072B183B1000697D46 /* CategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListViewController.swift; sourceTree = "<group>"; };
+		01A7F00B2B18CACF00697D46 /* DateTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimeViewController.swift; sourceTree = "<group>"; };
 		01BAC7542B01F3CB0049B73D /* Draft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Draft.swift; sourceTree = "<group>"; };
 		01BAC7562B0F40770049B73D /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		0BEC56187B0DC28B99DB3D87 /* Pods-taskapp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-taskapp.release.xcconfig"; path = "Target Support Files/Pods-taskapp/Pods-taskapp.release.xcconfig"; sourceTree = "<group>"; };
@@ -75,6 +81,9 @@
 				0101D4272AC7092B00576144 /* SceneDelegate.swift */,
 				0101D4292AC7092B00576144 /* ViewController.swift */,
 				0101D4392AC7DB1300576144 /* InputViewController.swift */,
+				01A7F00B2B18CACF00697D46 /* DateTimeViewController.swift */,
+				01A7F0072B183B1000697D46 /* CategoryListViewController.swift */,
+				01A7F0052B1837E100697D46 /* CategoryCreateViewController.swift */,
 				0101D42B2AC7092B00576144 /* Main.storyboard */,
 				0101D42E2AC7092C00576144 /* Assets.xcassets */,
 				0101D4302AC7092C00576144 /* LaunchScreen.storyboard */,
@@ -218,13 +227,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01A7F0082B183B1000697D46 /* CategoryListViewController.swift in Sources */,
 				0101D42A2AC7092B00576144 /* ViewController.swift in Sources */,
 				0101D4262AC7092B00576144 /* AppDelegate.swift in Sources */,
+				01A7F00C2B18CACF00697D46 /* DateTimeViewController.swift in Sources */,
 				0101D47E2ACCF45E00576144 /* Task.swift in Sources */,
 				01BAC7552B01F3CB0049B73D /* Draft.swift in Sources */,
 				0101D4282AC7092B00576144 /* SceneDelegate.swift in Sources */,
 				0101D43A2AC7DB1300576144 /* InputViewController.swift in Sources */,
 				01BAC7572B0F40770049B73D /* Category.swift in Sources */,
+				01A7F0062B1837E100697D46 /* CategoryCreateViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

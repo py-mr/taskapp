@@ -12,93 +12,118 @@ import UserNotifications
 class InputViewController: UIViewController {
     
     @IBOutlet weak var titleTextField: UITextField!
-    @IBOutlet weak var contentsTextView: UITextView!
+
     //@IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var categoryTextField: UITextField!
     @IBOutlet weak var dateTextField: UITextField!
+    @IBOutlet weak var contentsTextView: UITextView!
     
     @IBOutlet weak var errorLabelCategory: UILabel!
     @IBOutlet weak var errorLabelTitle: UILabel!
     @IBOutlet weak var errorLabelDate: UILabel!
     // Realmインスタンスを取得する
     let realm = try! Realm()
-    //var task: Task!
-    //var draft: Draft!
     var task = Task()
     var draft = Draft()
     var category = Category()
+    var datePicker: UIDatePicker = UIDatePicker()
+    
+    //★子から親（inputView）へ値を渡す
+    var categoryNumSelected: [Int] = []
+    var categorySelected: [String] = []
+    var categoryListViewController: CategoryListViewController?
+    // NOTE:ここを削除
+    //var dateSelected: String = ""
+    var dateTimeViewController: DateTimeViewController?
+    
+    //★親（View）から子（Input）へ
+    var viewToInput = ""
+    
+    //★ナビゲーションバーにボタン追加
+    let button = UIButton(type: .system)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        navigationItem.title = "タスク"
 
+        //ナビゲーションバーの表示
+        navigationItem.title = "タスク"
+        //デフォルトの戻るボタン削除
+        self.navigationItem.hidesBackButton = true
+        
+        //★「＜一覧」ボタンカスタマイズ。キャンセルボタンを押下した時と同じメソッドを実施する（あってる？）。
+        //「一覧」フォントサイズなど
+        button.setTitle("一覧", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 17)
+        //let size = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 30))
+        //「＜」フォントサイズなど
+        let sizeweight = UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold)
+        button.setImage(UIImage(systemName: "chevron.backward", withConfiguration: sizeweight), for: .normal)
+        //ナビゲーションバーの左にボタン配置。押下でcancelButtonメソッドを実行。
+        let viewButtonItem = UIBarButtonItem(customView: button) //（★18）カスタムビューとは？
+        navigationItem.leftBarButtonItem = viewButtonItem
+        button.addTarget(self, action: #selector(cancelButton), for: .touchUpInside)
+        
         //TextFieldの見た目
         fieldappearance(titleTextField)
         fieldappearance(categoryTextField)
+        categoryTextField.isEnabled = false
         fieldappearance(dateTextField)
         fieldappearance(contentsTextView)
-
-        // 背景をタップしたらdismissKeyboardメソッドを呼ぶように設定する
+        
+        // 背景をタップしたらdismissKeyboardメソッドを呼ぶように設定する //（★18）ViewとかCategoryCreateとか、入力するところには必須ですよね？
         let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(tapGesture)
-        
-        //★Taskクラスのデータ？を各フィールドに入力
+
+        //Taskクラスのデータを各フィールドに入力
         titleTextField.text = task.title
         contentsTextView.text = task.contents
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         dateTextField.text = dateFormatter.string(from: task.date)
         categoryTextField.text = task.category
-        print("(1-1)input表示後のtask.id", task.date)
     }
-    
-    /*
-    // UITextField編集直後に呼ばれるメソッド
-    @objc func textFieldDidBeginEditing(textField: UITextField) {
-        dateEditing(sender: dateTextField)
-    }
-    // 日付を入力する
-    @objc func dateEditing(sender: UITextField) {
-        let datePicker            = UIDatePicker()
-        datePicker.datePickerMode = UIDatePicker.Mode.date
-        datePicker.locale         = NSLocale(localeIdentifier: "ja_JP") as Locale
-        sender.inputView          = datePicker
-        datePicker.addTarget(self, action: Selector(("datePickerValueChanged:")), for: UIControl.Event.valueChanged)
-    }
-    
-    // 日付を変更した際にUITextFieldに値を設定する
-    @objc func datePickerValueChanged(sender:UIDatePicker) {
-        let dateFormatter       = DateFormatter()
-        dateFormatter.locale    = NSLocale(localeIdentifier: "ja_JP") as Locale
-        //dateFormatter.dateStyle = DateFormatterStyle.MediumStyle
-        dateTextField.text! = dateFormatter.string(from: sender.date)
-    }
-    */
 
     func fieldappearance(_ sender:UITextField) {
-        sender.placeholder = "入力してください"
+        if sender == categoryTextField {
+            sender.placeholder = "選択してください"
+        } else {
+            sender.placeholder = "入力してください"
+        }
         sender.layer.cornerRadius = 5
         sender.layer.borderColor = UIColor.lightGray.cgColor
         sender.layer.borderWidth = 1.0
     }
     func fieldappearance(_ sender:UITextView) {
-        //sender.placeholder = "入力してください"
         sender.layer.cornerRadius = 5
         sender.layer.borderColor = UIColor.lightGray.cgColor
         sender.layer.borderWidth = 1.0
     }
     
-    //viewWillDisappear(_:)メソッドは遷移する際に、画面が非表示になるとき呼ばれるメソッド
-    //（追加）画面が非表示になるときはanimatedのみ
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    @IBAction func dateTextFieldTouch(_ sender: Any) {
+        //下から子Viewを出す。
+        performSegue(withIdentifier: "SemiModal", sender: nil)
+        //dateTextField.isEnabled = false
     }
-
-    //（追加）「<back」ボタン押下で呼ばれるメソッド（もし保存していないのであれば、ポップアップ（内容を保存していませんが、よろしいですか？いいえ/はい）。はい→ViewControllerへ戻る、いいえ→遷移しない。もし保存しているのであれば、そのまま遷移する。）
-
-    //（追加）「保存」ボタン押下で呼ばれるメソッド（バリデーションチェック、Realmに保存し、ViewControllerに戻る）
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        //★View以外（CategoryList、DateTime）からの遷移の場合、viewToInputには何も入っていない（★18）こういうやり方でいいのか？
+        if viewToInput == "" {
+            //CategoryListからの遷移の場合
+            categoryTextField.text = categorySelected.joined(separator: ",")
+            // NOTE:ここを削除
+            //DateTimeからの遷移の場合
+            //dateTextField.text = dateSelected
+        //Viewからの遷移の場合
+        } else {
+            //何もしない
+            viewToInput = ""
+        }
+    }
+    
+    //「保存」ボタン押下で呼ばれるメソッド（バリデーションチェック、Realmに保存し、ViewControllerに戻る）
     @IBAction func saveButton(_ sender: Any) {
         //タイトル、日付（チェック不要。非Optionalだし。けど過去はNGにする）、カテゴリは必須にする
         switch validate().validTitle {
@@ -119,8 +144,10 @@ class InputViewController: UIViewController {
         }
         switch validate().validDate {
         case 1:
+            dateTextField.layer.borderColor = UIColor.red.cgColor
             errorLabelDate.text = "過去の日付は入力できません"
         default:
+            dateTextField.layer.borderColor = UIColor.lightGray.cgColor
             errorLabelDate.text = ""
         }
         
@@ -137,8 +164,10 @@ class InputViewController: UIViewController {
                     self.task.contents = self.contentsTextView.text
                     //self.task.date = self.datePicker.date
                     let dateFormatter = DateFormatter()
-                    let dateDate = dateFormatter.date(from: self.dateTextField.text!)
-                    self.task.date = dateDate!
+                    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+                    //let dateDate = dateFormatter.date(from: self.dateTextField.text!)
+                    let dateDate = dateTextField.text!
+                    self.task.date = dateFormatter.date(from: dateDate)!
                     self.task.category = self.categoryTextField.text!
                     self.realm.add(self.task, update: .modified)
                     print("(1-3)保存した時のID", task.id)
@@ -199,32 +228,30 @@ class InputViewController: UIViewController {
         
     }
     
-    //（追加）「キャンセル」ボタン押下でポップアップ（入力した情報を下書き保存しますか？下書き保存/破棄/編集を続ける）。下書き保存→１情報のみ保存しておく。ViewControllerで「＋」押下すると、保存しているものがあればそれが出てくる。破棄→ViewControllerへ戻る、編集を続ける→遷移しない
+    //キャンセルボタンタップ
     @IBAction func cancelButton(_ sender: Any) {
         let alert = UIAlertController(title: "入力内容を下書き保存しますか？", message: "破棄すると入力内容が失われます", preferredStyle: .alert)
         
         let draftsave = UIAlertAction(title: "下書き保存する", style: .default, handler: { [self] (action) -> Void in
             print(self.titleTextField.text!)
-            //★前保存していたものは削除する。（どうやろうかな）
-            //データベースから削除する
+            //元のドラフトデータはデータベースから削除する
             try! realm.write {
                 let draftArray = try! Realm().objects(Draft.self)
                 self.realm.delete(draftArray)
             }
-            try! self.realm.write {
+            try! self.realm.write { //（★18）全体selfいりますか？
                 self.draft.id = task.id
                 self.draft.title = self.titleTextField.text!
-                //★Optional型なので、ここでアンラップして非Optional型にしたものをdtaft.titleに設定している
+                //（★18）Optional型なので、ここでアンラップして非Optional型にしたものをdtaft.titleに設定している。Optional型なのは、UITextField!型だから？
                 self.draft.contents = self.contentsTextView.text
-                //★String! 強制アンラップされるOptional型のString→結果非Optional型のStringが返されるので!がいらない
-                //self.draft.date = self.datePicker.date
+                //（★18）String! 強制アンラップされるOptional型のString→結果非Optional型のStringが返されるので!がいらない。??
                 let dateFormatter = DateFormatter()
-                let dateDate = dateFormatter.date(from: self.dateTextField.text!)
-                self.draft.date = dateDate!
-                //self.draft.date = self.dateTextField.text!
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+                let dateDate = dateTextField.text!
+                self.draft.date = dateFormatter.date(from: dateDate)!
+                
                 self.draft.category = self.categoryTextField.text!
                 self.realm.add(self.draft, update: .modified)
-                print("(1-2)下書き保存した時のID", draft.id)
             }
             //何もせずそのままViewControllerへ戻る
             //アラートが消えるのと画面遷移が重ならないように0.1秒後に画面遷移するようにしてる
@@ -253,33 +280,7 @@ class InputViewController: UIViewController {
         
         self.present(alert, animated: true, completion: nil)
     }
-    
-    
-    @IBAction func makeCategoryButton(_ sender: UIButton) {
-        
-        let alert = UIAlertController(title: "新規カテゴリ名", message: "新規カテゴリ名を入力してください", preferredStyle: .alert)
-        
-        let save = UIAlertAction(title: "OK", style: .default, handler: { [self] (action) -> Void in
-            //★？
-           let text = alert.textFields?.first?.text ?? ""
-            try! self.realm.write {
-                self.category.categoryName = text
-                self.realm.add(self.task, update: .modified)
-                }
-        })
-        let cancel = UIAlertAction(title: "キャンセル", style: .cancel, handler: { (action) -> Void in
-            //ポップアップを消すのみ（なのでこのまま何も書かなくてOK）
-        })
-        
-        alert.addTextField{
-            (textField) in
-            textField.placeholder = "入力してください"
-        }
-        alert.addAction(save)
-        alert.addAction(cancel)
-        
-        self.present(alert, animated: true, completion: nil)
-    }
+
     //タスクのローカル通知を登録する
     func setNotification(task: Task) {
         let content = UNMutableNotificationContent()
@@ -321,11 +322,46 @@ class InputViewController: UIViewController {
          }
     }
     
+    //segueで画面遷移する時に呼ばれる。prepareは遷移が始まる前に呼ばれる、viewWillDisappearは遷移最中に呼ばれる
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "CategoryList" {
+            let categoryListViewController:CategoryListViewController = segue.destination as! CategoryListViewController //UIViewController⇨CategoryListViewControllerの型に変換している
+            //categoryListViewの親が自分であると明示
+            categoryListViewController.parentInputCategoryViewController = self
+            
+            //categoryTextFieldにすでに記載があった場合はcategoryListViewのnameArrayに入れる。
+            if categoryTextField.text != "" {
+                categoryListViewController.nameArray = categoryTextField.text!.components(separatedBy: ",")
+            } else {
+                categoryListViewController.nameArray = []
+            }
+        } else if segue.identifier == "SemiModal" { //⭐︎Identifierは全てにつけるべき
+            let dateTimeViewController:DateTimeViewController = segue.destination as! DateTimeViewController
+            // NOTE:ここを変更
+            dateTimeViewController.delegate = self
+            //dateTimeViewController.parentInputDateViewController = self
+            dateTimeViewController.hiduke = dateTextField.text!
+            
+            //（★18）dateTextFieldTappedメソッドに書くことはできない？
+            //modal遷移先のPresentationをFull Screenにした上で、viewがない部分をclearにした。
+            dateTimeViewController.view.backgroundColor = UIColor.clear
+            dateTimeViewController.modalPresentationStyle = .overFullScreen
+            //present(dateTimeViewController, animated: true) //★不要、performSegueがあるから？
+        }
+    }
+    
     @objc func dismissKeyboard(){
         // キーボードを閉じる
         view.endEditing(true)
     }
+}
+
+// NOTE:ここを追加。inputviewcontrollerにdatetimeviewdelegateを継承させる。
+extension InputViewController: DateTimeViewDelegate {
     
+    func dateSelected(date: String) {
+        dateTextField.text = date
+    }
 }
 
     /*
