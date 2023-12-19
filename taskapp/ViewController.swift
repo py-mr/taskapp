@@ -195,7 +195,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             if let sourceTask = sender as? Task { //★senderがnilでない&&Task型にCastできたら。
                 //as? = キャストしてアンラップ（非オプショナル型＝nil非許容にする）。キャストした結果失敗するとNil
                 inputViewController.task = sourceTask
-                inputViewController.viewToInput = "view to input"
+                //inputViewController.viewToInput = "view to input"
             } else {
                 // performSegueを呼び出す際に必ずsenderにTaskが設定されているならば、キャストに失敗することはあり得ないため、ここのブロックには絶対に来ない。ただし、as?でキャストしている以上、キャスト失敗に備えるコードは実装上避けられないため、なんらかの実装は必要となる。
                 inputViewController.task = Task()

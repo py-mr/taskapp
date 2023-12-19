@@ -38,7 +38,7 @@ class InputViewController: UIViewController {
     var dateTimeViewController: DateTimeViewController?
     
     //★親（View）から子（Input）へ
-    var viewToInput = ""
+    //var viewToInput = ""
     
     //★ナビゲーションバーにボタン追加
     let button = UIButton(type: .system)
@@ -110,8 +110,19 @@ class InputViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //★View以外（CategoryList、DateTime）からの遷移の場合、viewToInputには何も入っていない
         //（★18）こういうやり方でいいのか？⇨よいプロパティある。isMovingToParentViewController
+        if isMovingToParent {
+            //何もしない
+            print("aaa")
+        } else {
+            //CategoryListからの遷移の場合
+            categoryTextField.text = categorySelected.joined(separator: ",")
+            // NOTE:ここを削除
+            //DateTimeからの遷移の場合
+            //dateTextField.text = dateSelected
+        }
+        /*
+         //★View以外（CategoryList、DateTime）からの遷移の場合、viewToInputには何も入っていない
         if viewToInput == "" {
             //CategoryListからの遷移の場合
             categoryTextField.text = categorySelected.joined(separator: ",")
@@ -123,6 +134,7 @@ class InputViewController: UIViewController {
             //何もしない
             viewToInput = ""
         }
+        */
     }
     
     //「保存」ボタン押下で呼ばれるメソッド（バリデーションチェック、Realmに保存し、ViewControllerに戻る）
