@@ -28,8 +28,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //検索バーに何か入力されていれば、その値が含まれるカテゴリのタスクを、何も記載がなければタスク全てををtaskArrayリストへ代入。
     var taskArray: Results<Task> {
         if (searchBar.text != "") {
-            return try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: true).filter("category CONTAINS %@", searchBar.text!) //（★18）searchBar.textには、CategoryListでチェックマークをつけたカテゴリ名が昇順で表示されます。category CONTAINS AA,BB,CCのようになっているはずです。InputViewのカテゴリ名も昇順で登録されています。なので、これでfilterできているという認識です。これ以外にいいやり方はあったのでしょうか？問題点は、、、カテゴリがAA,BBのタスクは、手入力で"BB,AA"と入力するとヒットしません。今回はよしとしますが。。
             
+            let searchParameters = searchBar.text!.split(separator: ",")
+            var getList: Results<Task>
+            
+            getList = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: true)
+            for searchParam in searchParameters {
+                getList = getList.filter("category CONTAINS %@", searchParam)
+            }
+            return getList
         } else {
             return try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: true)
         }
@@ -53,7 +60,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
         //テーブルビュー
         //データを表示していない部分に罫線を表示。行の高さは自動で決まる。
-        tableView.fillerRowHeight = UITableView.automaticDimension        //★tableViewのfillerRowHeight（変数）のプロパティに、UITableViewのautomaticDimension（クラス）のプロパティを指定している？
+        tableView.fillerRowHeight = UITableView.automaticDimension
         //テーブルビューの背景色を指定
         tableView.backgroundColor = UIColor(displayP3Red: 247/255, green: 242/255, blue: 224/255,alpha: 1.0)
         //UITableViewDelegateやUITableViewDataSourceに、tableViewのデリゲートメソッドが定義されている。
@@ -107,7 +114,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     // 各セルを選択した時に実行されるメソッド
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //performSegue(withIdentifier: "cellSegue",sender: nil)
-        let indexPath = self.tableView.indexPathForSelectedRow //（★18）tableViewはOutletにしかないので、selfなくてもいい気がしますが、必要なのでしょうか？
+        let indexPath = self.tableView.indexPathForSelectedRow //self.tableView：プロパティのtableView。
         let selectedTask = taskArray[indexPath!.row]
         // senderに選択されたタスクを渡す
         performSegue(withIdentifier: "inputTask", sender: selectedTask)
@@ -123,7 +130,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // 削除するタスクを取得する
-            let task = self.taskArray[indexPath.row] //（★18）self.必要か？
+            let task = self.taskArray[indexPath.row] //自明なのでself.なくてもOK
             // ローカル通知をキャンセルする
             let center = UNUserNotificationCenter.current()
             center.removePendingNotificationRequests(withIdentifiers: [String(task.id.stringValue)])
@@ -131,7 +138,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             //データベースから削除する
             try! realm.write {
                 self.realm.delete(self.taskArray[indexPath.row])
-                tableView.deleteRows(at: [indexPath], with: .fade) //（★18）アニメーション付き削除？
+                tableView.deleteRows(at: [indexPath], with: .fade)
             }
             // 未通知のローカル通知一覧をログ出力
             center.getPendingNotificationRequests { (requests: [UNNotificationRequest]) in
@@ -162,26 +169,26 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 //senderにDraftから読み込んだタスクを渡す
                 //let draftTask = task
                 //self.performSegue(withIdentifier: "inputTask", sender: draftTask)
-                self.performSegue(withIdentifier: "inputTask", sender: task) //（★18）self不要では？
+                self.performSegue(withIdentifier: "inputTask", sender: task) //selfは必要。クロージャの中でインスタンスのプロパティやメソッドを参照するときは誰のものかを明示する必要がある。
             })
             let draftno = UIAlertAction(title: "いいえ", style: .default, handler: { (action) -> Void in
                 // senderに新規のタスク（Taskクラスのインスタンスを新しくして）渡す
-                self.performSegue(withIdentifier: "inputTask", sender: Task()) //（★18）self不要では？
+                self.performSegue(withIdentifier: "inputTask", sender: Task())
             })
             alert.addAction(draftyes)
             alert.addAction(draftno)
-            self.present(alert, animated: true, completion: nil) //（★18）self？
+            self.present(alert, animated: true, completion: nil)
         //もし下書き保存がなかった場合
         } else {
             // senderに新規のタスク（Taskクラスのインスタンスを新しくして）渡す
-            performSegue(withIdentifier: "inputTask", sender: Task())
+            performSegue(withIdentifier: "inputTask", sender: Task()) //クロージャの中なのでself不要（別途：インスタンスの寿命に関連★）
         }
     }
     
-    //segueで画面遷移する時に呼ばれる
+    //segueで画面遷移する時に呼ばれる。segueはキックされている。performSegueでどのsegueをキックするかを指定
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        //＋またはセルを押した場合
-        if segue.identifier == "inputTask" { //（★18）storyboardにて、view全体からinputViewにSegueを引っ張って、そのIdentifierを"inputTask"にしたから。view中にあるクリックできるようにしたところ（セル、＋）は全てinputViewに遷移するということ。であっている？絞り込みボタンからは単体でcategoryListへSegueを引っ張ったので、別の遷移先に遷移できる。
+        //＋またはセルを押した場合。performSegueやstoryboardでSegueを紐づけた。
+        if segue.identifier == "inputTask" {
             //segueから遷移先のInputViewControllerを取得する
             let inputViewController:InputViewController = segue.destination as! InputViewController
             

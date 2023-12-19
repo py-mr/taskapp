@@ -49,7 +49,7 @@ class CategoryCreateViewController: UIViewController {
         if self.categoryNameTextField.text!.isEmpty {
             categoryNameTextField.layer.borderColor = UIColor.red.cgColor
             errorLabelTitle.text = "必須項目です"
-        } else if self.categoryNameTextField.text!.range(of: "[Ａ-Ｚａ-ｚ０-９　 ]", options: .regularExpression) != nil {
+        } else if self.categoryNameTextField.text!.range(of: "[Ａ-Ｚａ-ｚ０-９　 ]", options: .regularExpression) != nil { //許容してしまい、システムで全角⇨半角にするとか。スペースは除去して登録するとかというのもあり。
             categoryNameTextField.layer.borderColor = UIColor.red.cgColor
             errorLabelTitle.text = "全角英数字、全角/半角スペースは登録できません"
         } else if categoryArray.count != 0 {
@@ -65,7 +65,6 @@ class CategoryCreateViewController: UIViewController {
                     self.category.categoryName = self.categoryNameTextField.text!
                     self.realm.add(self.category, update: .modified)
                 }
-                //★？
                 self.navigationController?.popViewController(animated: true)
             })
             let cancel = UIAlertAction(title: "キャンセル", style: .cancel, handler: { (action) -> Void in
@@ -78,28 +77,6 @@ class CategoryCreateViewController: UIViewController {
             self.present(alertsheet, animated: true, completion: nil)
         }
     }
-    /*
-    func validate() -> (Int) {
-        var validCategoryName = 0
-
-        if self.categoryNameTextField.text!.isEmpty {
-            validCategoryName = validCategoryName + 1
-            return (validCategoryName)
-        }
-        //★全角英数字、全角スペース、半角スペースの場合NG。
-        if self.categoryNameTextField.text!.range(of: "[Ａ-Ｚ０-９　 ]", options: .regularExpression) != nil {
-            validCategoryName = validCategoryName + 1
-            return (validCategoryName)
-        }
-        //★すでに登録されているものの場合NG。
-        let categoryArray = try! Realm().objects(Task.self).filter("category CONTAINS %@", categoryNameTextField.text!)
-        if categoryArray.isEmpty {
-            validCategoryName = validCategoryName + 1
-        return (validCategoryName)
-        }
-        return (validCategoryName)
-    }
-     */
     
     @objc func dismissKeyboard(){
         // キーボードを閉じる

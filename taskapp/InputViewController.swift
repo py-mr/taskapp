@@ -11,6 +11,7 @@ import UserNotifications
 
 class InputViewController: UIViewController {
     
+    //Optionalなんだけど使うときに非Optionalに変換される
     @IBOutlet weak var titleTextField: UITextField!
 
     //@IBOutlet weak var datePicker: UIDatePicker!
@@ -52,7 +53,7 @@ class InputViewController: UIViewController {
         //デフォルトの戻るボタン削除
         self.navigationItem.hidesBackButton = true
         
-        //★「＜一覧」ボタンカスタマイズ。キャンセルボタンを押下した時と同じメソッドを実施する（あってる？）。
+        //「＜一覧」ボタンカスタマイズ。キャンセルボタンを押下した時と同じメソッドを実施する。
         //「一覧」フォントサイズなど
         button.setTitle("一覧", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17)
@@ -61,7 +62,7 @@ class InputViewController: UIViewController {
         let sizeweight = UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold)
         button.setImage(UIImage(systemName: "chevron.backward", withConfiguration: sizeweight), for: .normal)
         //ナビゲーションバーの左にボタン配置。押下でcancelButtonメソッドを実行。
-        let viewButtonItem = UIBarButtonItem(customView: button) //（★18）カスタムビューとは？
+        let viewButtonItem = UIBarButtonItem(customView: button)
         navigationItem.leftBarButtonItem = viewButtonItem
         button.addTarget(self, action: #selector(cancelButton), for: .touchUpInside)
         
@@ -72,7 +73,7 @@ class InputViewController: UIViewController {
         fieldappearance(dateTextField)
         fieldappearance(contentsTextView)
         
-        // 背景をタップしたらdismissKeyboardメソッドを呼ぶように設定する //（★18）ViewとかCategoryCreateとか、入力するところには必須ですよね？
+        // 背景をタップしたらdismissKeyboardメソッドを呼ぶように設定する
         let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(tapGesture)
 
@@ -109,7 +110,8 @@ class InputViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //★View以外（CategoryList、DateTime）からの遷移の場合、viewToInputには何も入っていない（★18）こういうやり方でいいのか？
+        //★View以外（CategoryList、DateTime）からの遷移の場合、viewToInputには何も入っていない
+        //（★18）こういうやり方でいいのか？⇨よいプロパティある。isMovingToParentViewController
         if viewToInput == "" {
             //CategoryListからの遷移の場合
             categoryTextField.text = categorySelected.joined(separator: ",")
@@ -235,19 +237,21 @@ class InputViewController: UIViewController {
         let draftsave = UIAlertAction(title: "下書き保存する", style: .default, handler: { [self] (action) -> Void in
             print(self.titleTextField.text!)
             //元のドラフトデータはデータベースから削除する
-            try! realm.write {
+            try! realm.write { //クロージャ内なので、本来selfはひつよう。
                 let draftArray = try! Realm().objects(Draft.self)
                 self.realm.delete(draftArray)
+            /*
             }
-            try! self.realm.write { //（★18）全体selfいりますか？
-                self.draft.id = task.id
-                self.draft.title = self.titleTextField.text!
-                //（★18）Optional型なので、ここでアンラップして非Optional型にしたものをdtaft.titleに設定している。Optional型なのは、UITextField!型だから？
+            try! self.realm.write { //一つのトランザクションでやって方がいいかも。delete成功してadd失敗の可能性もあるため。
+             */
+                self.draft.id = self.task.id
+                self.draft.title = self.titleTextField.text! //IBOUtlet接続されたプロパティなのでクロージャの中ではselfいる
+                //textがString?（Optional型）なので、ここでアンラップして非Optional型にしたものをdtaft.titleに設定する。
                 self.draft.contents = self.contentsTextView.text
-                //（★18）String! 強制アンラップされるOptional型のString→結果非Optional型のStringが返されるので!がいらない。??
+                //textがString!（強制アンラップされるOptional型のString）→結果非Optional型のStringが返されるので!がいらない。
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-                let dateDate = dateTextField.text!
+                let dateDate = self.dateTextField.text!
                 self.draft.date = dateFormatter.date(from: dateDate)!
                 
                 self.draft.category = self.categoryTextField.text!
@@ -342,7 +346,7 @@ class InputViewController: UIViewController {
             //dateTimeViewController.parentInputDateViewController = self
             dateTimeViewController.hiduke = dateTextField.text!
             
-            //（★18）dateTextFieldTappedメソッドに書くことはできない？
+            //dateTextFieldTappedメソッドに書くことはできない？⇨遷移するときに次の画面を取得できるので、このメソッド内でしか書けない。
             //modal遷移先のPresentationをFull Screenにした上で、viewがない部分をclearにした。
             dateTimeViewController.view.backgroundColor = UIColor.clear
             dateTimeViewController.modalPresentationStyle = .overFullScreen
