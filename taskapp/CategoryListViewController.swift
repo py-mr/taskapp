@@ -23,7 +23,16 @@ class CategoryListViewController: UIViewController, UITableViewDelegate, UITable
     // DB内のタスクが格納されるリスト。（Realmクラスのobjects(_:)メソッドでクラス（「型名.self」で型そのものを変数に入れて扱える。）を指定して一覧を取得）
     // 名前順でソート：昇順（sorted(byKeyPath:ascending:)メソッド）
     // 以降内容をアップデートするとリスト内は自動的に更新される。
-    var categoryArray = try! Realm().objects(Category.self).sorted(byKeyPath: "categoryName", ascending: true)
+    //var categoryArray = try! Realm().objects(Category.self).sorted(byKeyPath: "categoryName", ascending: true)
+    //var categoryArray = try! Realm().objects(Category.self) //空みたいな。なんでもOK
+    
+    var categoryArray = try! Realm().objects(Category.self).sorted(by: {
+        return $0.categoryName.localizedStandardCompare($1.categoryName) == .orderedAscending
+        //⇨この場合のclosureは即時で動く。これはcategoryArray初期化のタイミング。categoryListControllerのインスタンスが作られるタイミングで。
+        //カテゴリ名が追加されたタイミングでも同様なのを行わないといけない。
+        //⇨ここでRealmのオブジェクトを握っている
+       //RealmのResult型。Result野中にCategoryのインスタンスがある。Result自体がRealm
+    })
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -96,6 +105,11 @@ class CategoryListViewController: UIViewController, UITableViewDelegate, UITable
     //CategoryCreate画面から戻って来た時に、TableViewを更新させる。
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        categoryArray = try! Realm().objects(Category.self).sorted(by: {
+            return $0.categoryName.localizedStandardCompare($1.categoryName) == .orderedAscending
+        }) //メソッドの中で宣言＝変数、クラスの中に宣言＝プロパティ。プロパティに値を代入する。
+        
         tableView.reloadData()
     }
     

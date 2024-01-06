@@ -76,6 +76,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         searchBar.enablesReturnKeyAutomatically = false
         //UISearchbarの背景に空のUIImageをセットする
         searchBar.backgroundImage = UIImage()
+        
+        // 背景をタップしたらdismissKeyboardメソッドを呼ぶように設定する
+        let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        self.view.addGestureRecognizer(tapGesture)
     }
     
     // データの数（＝セルの数）を返すメソッド
@@ -231,6 +235,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         searchBar.text = categoryFilter.joined(separator: ",")
         
         tableView.reloadData()
+    }
+    
+    @objc func dismissKeyboard(){
+        // キーボードを閉じる
+        view.endEditing(true)
     }
 }
 

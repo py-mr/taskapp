@@ -17,11 +17,12 @@ class InputViewController: UIViewController {
     //@IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var categoryTextField: UITextField!
     @IBOutlet weak var dateTextField: UITextField!
-    @IBOutlet weak var contentsTextView: UITextView!
+    @IBOutlet weak var contentsTextView: PlaceTextView!
     
     @IBOutlet weak var errorLabelCategory: UILabel!
     @IBOutlet weak var errorLabelTitle: UILabel!
     @IBOutlet weak var errorLabelDate: UILabel!
+
     // Realmインスタンスを取得する
     let realm = try! Realm()
     var task = Task()
@@ -73,6 +74,9 @@ class InputViewController: UIViewController {
         fieldappearance(dateTextField)
         fieldappearance(contentsTextView)
         
+        //
+        contentsTextView.placeHolder = "入力してください"
+        
         // 背景をタップしたらdismissKeyboardメソッドを呼ぶように設定する
         let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(tapGesture)
@@ -110,7 +114,6 @@ class InputViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //（★18）こういうやり方でいいのか？⇨よいプロパティある。isMovingToParentViewController
         if isMovingToParent {
             //何もしない
             print("aaa")
@@ -338,6 +341,7 @@ class InputViewController: UIViewController {
          }
     }
     
+    //segueで画面遷移する時に呼ばれる。prepareは遷移が始まる前に呼ばれる、viewWillDisappearは遷移最中に呼ばれる
     //segueで画面遷移する時に呼ばれる。prepareは遷移が始まる前に呼ばれる、viewWillDisappearは遷移最中に呼ばれる
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "CategoryList" {

@@ -15,6 +15,8 @@
 		0101D4322AC7092C00576144 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0101D4302AC7092C00576144 /* LaunchScreen.storyboard */; };
 		0101D43A2AC7DB1300576144 /* InputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0101D4392AC7DB1300576144 /* InputViewController.swift */; };
 		0101D47E2ACCF45E00576144 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0101D47D2ACCF45E00576144 /* Task.swift */; };
+		017F90A62B32B65D00936AEF /* PlaceTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017F90A42B32B65D00936AEF /* PlaceTextView.swift */; };
+		017F90A72B32B65D00936AEF /* PlaceTextView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 017F90A52B32B65D00936AEF /* PlaceTextView.xib */; };
 		01A7F0062B1837E100697D46 /* CategoryCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A7F0052B1837E100697D46 /* CategoryCreateViewController.swift */; };
 		01A7F0082B183B1000697D46 /* CategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A7F0072B183B1000697D46 /* CategoryListViewController.swift */; };
 		01A7F00C2B18CACF00697D46 /* DateTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A7F00B2B18CACF00697D46 /* DateTimeViewController.swift */; };
@@ -34,6 +36,8 @@
 		0101D4332AC7092C00576144 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0101D4392AC7DB1300576144 /* InputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewController.swift; sourceTree = "<group>"; };
 		0101D47D2ACCF45E00576144 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		017F90A42B32B65D00936AEF /* PlaceTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceTextView.swift; sourceTree = "<group>"; };
+		017F90A52B32B65D00936AEF /* PlaceTextView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlaceTextView.xib; sourceTree = "<group>"; };
 		01A7F0052B1837E100697D46 /* CategoryCreateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCreateViewController.swift; sourceTree = "<group>"; };
 		01A7F0072B183B1000697D46 /* CategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListViewController.swift; sourceTree = "<group>"; };
 		01A7F00B2B18CACF00697D46 /* DateTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimeViewController.swift; sourceTree = "<group>"; };
@@ -84,6 +88,8 @@
 				01A7F00B2B18CACF00697D46 /* DateTimeViewController.swift */,
 				01A7F0072B183B1000697D46 /* CategoryListViewController.swift */,
 				01A7F0052B1837E100697D46 /* CategoryCreateViewController.swift */,
+				017F90A42B32B65D00936AEF /* PlaceTextView.swift */,
+				017F90A52B32B65D00936AEF /* PlaceTextView.xib */,
 				0101D42B2AC7092B00576144 /* Main.storyboard */,
 				0101D42E2AC7092C00576144 /* Assets.xcassets */,
 				0101D4302AC7092C00576144 /* LaunchScreen.storyboard */,
@@ -175,6 +181,7 @@
 				0101D4322AC7092C00576144 /* LaunchScreen.storyboard in Resources */,
 				0101D42F2AC7092C00576144 /* Assets.xcassets in Resources */,
 				0101D42D2AC7092B00576144 /* Main.storyboard in Resources */,
+				017F90A72B32B65D00936AEF /* PlaceTextView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +235,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				01A7F0082B183B1000697D46 /* CategoryListViewController.swift in Sources */,
+				017F90A62B32B65D00936AEF /* PlaceTextView.swift in Sources */,
 				0101D42A2AC7092B00576144 /* ViewController.swift in Sources */,
 				0101D4262AC7092B00576144 /* AppDelegate.swift in Sources */,
 				01A7F00C2B18CACF00697D46 /* DateTimeViewController.swift in Sources */,

@@ -190,7 +190,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="ndR-eP-fPe">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="ndR-eP-fPe" customClass="PlaceTextView" customModule="taskapp" customModuleProvider="target">
                                 <rect key="frame" x="10" y="314" width="373" height="80"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
@@ -294,10 +294,10 @@
                     <navigationItem key="navigationItem" id="FeY-ta-U90"/>
                     <connections>
                         <outlet property="categoryTextField" destination="emr-81-9Fe" id="hce-fS-Drg"/>
-                        <outlet property="contentsTextView" destination="ndR-eP-fPe" id="Dil-sg-HED"/>
+                        <outlet property="contentsTextView" destination="ndR-eP-fPe" id="00U-ya-Qzb"/>
                         <outlet property="dateTextField" destination="Vfd-L1-cvY" id="H87-t3-wG6"/>
                         <outlet property="errorLabelCategory" destination="mb1-Bq-kLn" id="KPU-mN-3H8"/>
-                        <outlet property="errorLabelDate" destination="e9q-kE-flP" id="16U-K6-UWk"/>
+                        <outlet property="errorLabelDate" destination="e9q-kE-flP" id="sjZ-TU-ffw"/>
                         <outlet property="errorLabelTitle" destination="XOG-47-Cov" id="r7R-iN-uge"/>
                         <outlet property="titleTextField" destination="UTn-6o-ip9" id="Fed-Du-BpP"/>
                     </connections>
@@ -539,7 +539,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="xbZ-wm-5TH"/>
+        <segue reference="BQv-TA-su4"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="plus" catalog="system" width="128" height="113"/>
